@@ -91,6 +91,12 @@ export const portfolioData: PortfolioData = {
       period: "2020.01 - 2020.06",
       status: "수료",
     },
+    {
+      school: "한국해양대학교",
+      major: "경제학과",
+      period: "2011.03 - 2020.02",
+      status: "졸업",
+    },
   ],
   contact: {
     email: "jing07161@google.com",
