@@ -30,7 +30,7 @@ export const portfolioData: PortfolioData = {
   projects: [
     {
       title: "Clepsydra (클렙시드라)",
-      period: "2024.01 - Present",
+      period: "2026.02 - Present",
       description: "효율적인 시간 관리를 위한 타이머 앱",
       tags: ["Flutter", "NestJS", "PostgreSQL", "Prisma"],
       github: "https://github.com/hyunsoo0202/clepsydra",
