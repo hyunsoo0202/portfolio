@@ -33,7 +33,7 @@ export const portfolioData: PortfolioData = {
       period: "2024.01 - Present",
       description: "효율적인 시간 관리를 위한 타이머 앱",
       tags: ["Flutter", "NestJS", "PostgreSQL", "Prisma"],
-      github: "https://github.com/your-repo/clepsydra",
+      github: "https://github.com/hyunsoo0202/clepsydra",
       achievements: [
         "Flutter를 이용한 크로스 플랫폼 UI 구축",
         "NestJS 기반의 확장 가능한 백엔드 아키텍처 설계",
