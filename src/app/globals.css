@@ -36,7 +36,11 @@
 .blob-1 {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, rgba(168,85,247,0.3) 100%);
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.3) 0%,
+    rgba(168, 85, 247, 0.3) 100%
+  );
   top: -100px;
   right: -100px;
   animation: float 20s infinite alternate;
@@ -45,15 +49,23 @@
 .blob-2 {
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(45,212,191,0.2) 0%, rgba(59,130,246,0.2) 100%);
+  background: radial-gradient(
+    circle,
+    rgba(45, 212, 191, 0.2) 0%,
+    rgba(59, 130, 246, 0.2) 100%
+  );
   bottom: -150px;
   left: -150px;
   animation: float 25s infinite alternate-reverse;
 }
 
 @keyframes float {
-  from { transform: translate(0, 0) rotate(0deg); }
-  to { transform: translate(100px, 50px) rotate(30deg); }
+  from {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate(100px, 50px) rotate(30deg);
+  }
 }
 
 /* Custom Scrollbar - Dark Style */

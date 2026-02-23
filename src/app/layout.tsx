@@ -13,8 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "김현수 | Frontend Developer",
-  description: "화면 너머의 데이터 흐름까지 설계하는 4년 차 개발자 김현수입니다.",
+  title: "김현수 | 프론트엔드 개발자 포트폴리오",
+  description:
+    "화면 너머의 데이터 흐름까지 설계하는 4년 차 개발자 김현수입니다. Next.js, React, AWS 기반의 최적화된 웹 개발 경험을 공유합니다.",
+  keywords: ["프론트엔드", "포트폴리오", "개발자", "김현수", "React", "Next.js", "Frontend Developer"],
+  openGraph: {
+    title: "김현수 | 프론트엔드 개발자 포트폴리오",
+    description: "데이터 흐름을 설계하는 개발자 김현수의 포트폴리오입니다.",
+    url: "https://www.sooman.dev",
+    siteName: "김현수 포트폴리오",
+    locale: "ko_KR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -31,11 +41,9 @@ export default function RootLayout({
         {/* Background Blobs - 다크 모드에서 더 선명하게 보이도록 조정됨 */}
         <div className="blob blob-1" />
         <div className="blob blob-2" />
-        
+
         {/* Content Wrapper */}
-        <div className="relative z-10 min-h-screen">
-          {children}
-        </div>
+        <div className="relative z-10 min-h-screen">{children}</div>
       </body>
     </html>
   );
