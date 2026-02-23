@@ -1,0 +1,48 @@
+name: Deploy Portfolio
+
+# 언제 이 작업을 실행할까요?
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 코드가 푸시되면 실행합니다.
+
+jobs:
+  deploy:
+    # GitHub이 제공하는 가상 컴퓨터(Runner) 환경 설정
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 가상 컴퓨터로 현재 코드를 가져옵니다.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 가상 컴퓨터에 Node.js를 설치합니다. (캐시를 사용하여 속도 업!)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.19.0'
+          cache: 'yarn'
+
+      # 3. 라이브러리를 설치합니다.
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      # 4. 프로젝트를 빌드합니다. (out 폴더 생성)
+      - name: Build
+        run: yarn build
+
+      # 5. AWS 인증 정보를 설정합니다. (GitHub Secrets에서 값을 읽어옵니다.)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2 # S3 버킷 리전에 맞게 수정 가능합니다.
+
+      # 6. S3로 빌드 결과물을 전송(동기화)합니다.
+      - name: Deploy to S3
+        run: aws s3 sync out/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+
+      # 7. CloudFront 캐시를 무효화(삭제)하여 즉시 반영합니다.
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
