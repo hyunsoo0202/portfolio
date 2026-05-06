@@ -1,16 +1,14 @@
 import { portfolioData } from "@/data/portfolio";
 import {
   Mail,
-  ExternalLink,
   GraduationCap,
   Briefcase,
   Code2,
-  User,
-  Globe,
+  ChevronRight,
 } from "lucide-react";
 
 const GitHubIcon = ({
-  size = 18,
+  size = 20,
   className = "",
 }: {
   size?: number;
@@ -34,54 +32,41 @@ const GitHubIcon = ({
 );
 
 export default function Home() {
-  const { about, skills, experiences, projects, education, contact } =
-    portfolioData;
+  const { about, skills, experiences, education, contact } = portfolioData;
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16 sm:py-24 space-y-12 text-slate-200">
-      {/* Hero / About Section */}
-      <section className="glass-card rounded-3xl p-8 sm:p-12 mb-8 border-indigo-500/10">
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="flex-1">
-            <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold tracking-widest uppercase border border-indigo-500/20">
-              <User size={14} /> About Me
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-[1.1]">
-              {about.name}
-              <span className="block text-xl sm:text-2xl mt-4 font-medium text-slate-400 leading-normal">
-                {about.role}
-              </span>
-            </h1>
-            <p className="mt-8 text-lg sm:text-xl font-medium leading-relaxed text-slate-300">
-              {about.intro}
-            </p>
-            <p className="mt-4 text-slate-400 leading-relaxed max-w-2xl text-base sm:text-lg">
-              {about.description}
-            </p>
-          </div>
+    <main className="mx-auto max-w-6xl px-8 py-20 sm:py-32 space-y-24">
+      {/* Hero Section (Full Width) */}
+      <section className="space-y-8 pb-16 border-b border-neutral-100">
+        <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-neutral-900">
+          {about.name}
+        </h1>
+        <p className="text-2xl sm:text-3xl text-neutral-500 font-medium">{about.role}</p>
+        <div className="max-w-4xl space-y-8 text-neutral-600 leading-relaxed text-lg sm:text-xl">
+          <p className="text-neutral-900 font-semibold text-2xl sm:text-3xl leading-tight">{about.intro}</p>
+          <p>{about.description}</p>
         </div>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-        {/* Left Column: Skills & Info */}
-        <aside className="md:col-span-4 space-y-12">
-          {/* Skills Section */}
-          <section className="glass-card rounded-3xl p-8">
-            <div className="flex items-center gap-2 mb-8 text-indigo-400 font-bold tracking-tight">
-              <Code2 size={20} />
-              <span className="text-sm uppercase tracking-widest">Skills</span>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+        {/* Left Column: Sidebar (Skills, Education, Contact) */}
+        <aside className="lg:col-span-4 space-y-20">
+          {/* Skills */}
+          <section className="space-y-10">
+            <div className="flex items-center gap-3 text-neutral-400 uppercase tracking-[0.2em] text-sm font-bold">
+              <Code2 size={18} /> Tech Stack
             </div>
-            <div className="space-y-8">
+            <div className="space-y-10">
               {skills.map((skillGroup) => (
-                <div key={skillGroup.category}>
-                  <h3 className="mb-4 text-[14px] font-black uppercase tracking-[0.2em] text-slate-500">
+                <div key={skillGroup.category} className="space-y-5">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-neutral-400">
                     {skillGroup.category}
                   </h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {skillGroup.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="px-3 py-1.5 rounded-lg bg-slate-800/50 text-[13px] font-bold text-slate-300 border border-white/5 shadow-sm transition-all hover:border-indigo-500/30 hover:bg-slate-800"
+                        className="px-4 py-2 rounded-lg border border-neutral-200 bg-neutral-50 text-sm font-semibold text-neutral-700"
                       >
                         {skill}
                       </span>
@@ -92,205 +77,126 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Education Section */}
-          <section className="glass-card rounded-3xl p-8">
-            <div className="flex items-center gap-2 mb-8 text-indigo-400">
-              <GraduationCap size={20} />
-              <span className="text-sm font-bold uppercase tracking-widest">
-                Education
-              </span>
+          {/* Education */}
+          <section className="space-y-10">
+            <div className="flex items-center gap-3 text-neutral-400 uppercase tracking-[0.2em] text-sm font-bold">
+              <GraduationCap size={18} /> Education
             </div>
-            <div className="space-y-8">
+            <div className="space-y-10">
               {education.map((edu, idx) => (
-                <div
-                  key={idx}
-                  className="relative pl-4 border-l-2 border-indigo-500/20"
-                >
-                  <h3 className="text font-bold text-white leading-tight">
-                    {edu.school}
-                  </h3>
-                  <p className="text-sm mt-1 text-slate-400">{edu.major}</p>
-                  <div className="flex items-center gap-2 mt-2 text-[10px] font-bold text-indigo-400/70">
-                    <span className="text-xstabular-nums">{edu.period}</span>
-                    <span className="w-1 h-1 rounded-full bg-slate-700" />
-                    <span className="text-xs ">{edu.status}</span>
-                  </div>
+                <div key={idx} className="space-y-2">
+                  <h3 className="text-lg font-bold text-neutral-800">{edu.school}</h3>
+                  <p className="text-base text-neutral-500">{edu.major}</p>
+                  <p className="text-xs text-neutral-400 uppercase font-bold tracking-widest">
+                    {edu.period} · {edu.status}
+                  </p>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Contact Section */}
-          <section className="glass-card rounded-3xl p-8">
-            <div className="flex items-center gap-2 mb-8 text-indigo-400">
-              <Mail size={20} />
-              <span className="text-sm font-bold uppercase tracking-widest">
-                Connect
-              </span>
+          {/* Contact */}
+          <section className="space-y-10">
+            <div className="flex items-center gap-3 text-neutral-400 uppercase tracking-[0.2em] text-sm font-bold">
+              <Mail size={18} /> Contact
             </div>
-            <div className="flex flex-col gap-1">
-              <a
-                href={`mailto:${contact.email}`}
-                className="flex items-center gap-3 p-3 rounded-2xl hover:bg-indigo-500/10 transition-colors group border border-transparent hover:border-indigo-500/20"
-              >
-                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:scale-110 transition-transform">
-                  <Mail size={20} />
-                </div>
-                <span className="text-xs font-semibold truncate text-slate-300">
-                  {contact.email}
-                </span>
+            <div className="flex flex-col gap-5">
+              <a href={`mailto:${contact.email}`} className="text-base font-medium text-neutral-600 hover:text-neutral-900 transition-colors flex items-center gap-3">
+                <Mail size={20} className="text-neutral-400" /> {contact.email}
               </a>
-              <a
-                href={contact.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition-colors group border border-transparent hover:border-white/10"
-              >
-                <div className="p-2 rounded-lg bg-white/10 text-white group-hover:scale-110 transition-transform">
-                  <GitHubIcon size={20} />
-                </div>
-                <span className="text-xs font-semibold text-slate-300">
-                  GitHub Profile
-                </span>
+              <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-base font-medium text-neutral-600 hover:text-neutral-900 transition-colors flex items-center gap-3">
+                <GitHubIcon size={20} className="text-neutral-400" /> GitHub Profile
               </a>
-              {contact.blog && (
-                <a
-                  href={contact.blog}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-500/10 transition-colors group border border-transparent hover:border-emerald-500/20"
-                >
-                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:scale-110 transition-transform">
-                    <Globe size={16} />
-                  </div>
-                  <span className="text-xs font-semibold text-slate-300">
-                    Read Blog
-                  </span>
-                </a>
-              )}
             </div>
           </section>
         </aside>
 
-        {/* Right Column: Projects & Experience */}
-        <div className="md:col-span-8 space-y-12">
-          {/* Projects Section */}
-          <section className="space-y-8">
-            <div className="flex items-center gap-2 mb-2 px-6 text-indigo-400">
-              <Globe size={20} />
-              <span className="text-sm font-extrabold uppercase tracking-[0.2em]">
-                Featured Projects
-              </span>
-            </div>
-            {projects.map((project) => (
-              <div
-                key={project.title}
-                className="glass-card rounded-[2rem] p-8 sm:p-10 hover:shadow-indigo-500/10 hover:shadow-2xl hover:border-indigo-500/20 group overflow-hidden"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                  <h3 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  <span className="text-[11px] font-black tabular-nums text-slate-400 bg-white/5 px-3 py-1.5 rounded-full uppercase tracking-widest border border-white/5">
-                    {project.period}
+        {/* Right Column: Experience (Main Content) */}
+        <div className="lg:col-span-8 space-y-24">
+          <div className="flex items-center gap-3 text-neutral-400 uppercase tracking-[0.2em] text-sm font-bold mb-10">
+            <Briefcase size={18} /> Work Experience
+          </div>
+
+          {experiences.map((exp, expIdx) => (
+            <div key={expIdx} className="space-y-12">
+              {/* Company Header */}
+              <div className="space-y-3">
+                <div className="flex flex-col sm:flex-row justify-between items-baseline gap-4">
+                  <h3 className="text-4xl font-black text-neutral-900 leading-tight whitespace-pre-line">{exp.company}</h3>
+                  <span className="text-sm font-mono text-neutral-400 font-bold tracking-tighter">
+                    {exp.period}
                   </span>
                 </div>
-                <p className="text-base sm:text-lg text-slate-400 leading-relaxed">
-                  {project.description}
-                </p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400/80"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-8 space-y-3">
-                  {project.achievements.map((achieve, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-4 p-4 rounded-2xl bg-slate-800/30 text-sm sm:text-base text-slate-300 border border-white/5"
-                    >
-                      <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
-                      {achieve}
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-8 pt-6 border-t border-white/5 flex gap-6">
-                  {project.github && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-indigo-400 transition-colors"
-                    >
-                      <GitHubIcon size={14} /> Codebase
-                    </a>
-                  )}
-                  {project.link && (
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-indigo-400 transition-colors"
-                    >
-                      <ExternalLink size={14} /> Live Demo
-                    </a>
-                  )}
-                </div>
+                <p className="text-xl text-neutral-500 font-semibold">{exp.role}</p>
               </div>
-            ))}
-          </section>
 
-          {/* Experience Section */}
-          <section className="space-y-8">
-            <div className="flex items-center gap-2 mb-2 px-6 text-indigo-400">
-              <Briefcase size={20} />
-              <span className="text-sm font-extrabold uppercase tracking-[0.2em]">
-                Work Experience
-              </span>
-            </div>
-            <div className="space-y-6">
-              {experiences.map((exp, idx) => (
-                <div
-                  key={`${exp.company}-${idx}`}
-                  className="glass-card rounded-3xl p-8 sm:p-10 relative group border-indigo-500/5 hover:border-indigo-500/20 transition-all"
-                >
-                  <div className="flex flex-col sm:flex-row justify-between gap-2 mb-4">
-                    <h3 className="text-xl font-bold text-white">
-                      {exp.company}
-                    </h3>
-                    <span className="text-[11px] font-black text-indigo-400/70 tabular-nums uppercase tracking-widest">
-                      {exp.period}
-                    </span>
+              {/* Projects */}
+              <div className="space-y-24">
+                {exp.projects.map((project, projIdx) => (
+                  <div key={projIdx} className="space-y-10">
+                    <div className="space-y-4">
+                      <h4 className="text-2xl font-bold text-neutral-800 flex items-center gap-4">
+                        <span className="w-2 h-2 rounded-full bg-neutral-300" />
+                        {project.title}
+                      </h4>
+                      <p className="text-lg text-neutral-500 leading-relaxed pl-6">
+                        {project.description}
+                      </p>
+                    </div>
+
+                    {/* Tasks (Vertical Flow) */}
+                    <div className="space-y-16 pl-6 border-l-2 border-neutral-100">
+                      {project.tasks.map((task, taskIdx) => (
+                        <div key={taskIdx} className="space-y-8">
+                          <h5 className="text-xl font-bold text-neutral-800 flex items-start gap-3">
+                            <ChevronRight size={24} className="text-neutral-300 mt-1 shrink-0" />
+                            {task.title}
+                          </h5>
+                          
+                          <div className="space-y-8 pl-9">
+                            <div className="space-y-2">
+                              <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Problem</span>
+                              <p className="text-lg text-neutral-700 leading-relaxed">{task.problem}</p>
+                            </div>
+                            <div className="space-y-2">
+                              <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Solution</span>
+                              <p className="text-lg text-neutral-700 leading-relaxed">{task.solution}</p>
+                            </div>
+                            <div className="space-y-2">
+                              <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Result</span>
+                              <p className="text-lg text-neutral-700 leading-relaxed font-medium">{task.result}</p>
+                            </div>
+                            {task.logic && (
+                              <div className="space-y-2 p-6 bg-neutral-50 rounded-xl border border-neutral-100">
+                                <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Why?</span>
+                                <p className="text-base text-neutral-500 italic leading-relaxed">{task.logic}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-sm font-bold text-indigo-300/60 uppercase tracking-wider mb-6">
-                    {exp.role}
-                  </p>
-                  <ul className="space-y-3">
-                    {exp.description.map((desc, i) => (
-                      <li
-                        key={i}
-                        className="flex items-start gap-3 text-slate-400 leading-relaxed"
-                      >
-                        <div className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-slate-600" />
-                        {desc}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </section>
+          ))}
         </div>
       </div>
 
-      {/* Footer Decoration */}
-      <footer className="pt-24 pb-12 text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-800">
-        &copy; {new Date().getFullYear()} {about.name}. Built with Passion.
+      {/* Footer */}
+      <footer className="pt-32 pb-16 border-t border-neutral-100 flex justify-between items-center">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-400">
+          &copy; {new Date().getFullYear()} {about.name}.
+        </p>
+        <div className="flex gap-6">
+          <a href={contact.github} className="text-neutral-300 hover:text-neutral-900 transition-colors">
+            <GitHubIcon size={24} />
+          </a>
+          <a href={`mailto:${contact.email}`} className="text-neutral-300 hover:text-neutral-900 transition-colors">
+            <Mail size={24} />
+          </a>
+        </div>
       </footer>
     </main>
   );

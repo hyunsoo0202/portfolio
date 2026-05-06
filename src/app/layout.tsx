@@ -33,17 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // 'dark' 클래스를 추가하여 항상 다크 모드 스타일이 적용되도록 설정합니다.
-    <html lang="ko" className="dark scroll-smooth">
+    <html lang="ko" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-100 transition-colors duration-500`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-neutral-900`}
       >
-        {/* Background Blobs - 다크 모드에서 더 선명하게 보이도록 조정됨 */}
-        <div className="blob blob-1" />
-        <div className="blob blob-2" />
-
-        {/* Content Wrapper */}
-        <div className="relative z-10 min-h-screen">{children}</div>
+        <div className="relative min-h-screen">{children}</div>
       </body>
     </html>
   );

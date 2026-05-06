@@ -5,70 +5,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Always Dark Mode Theme Variables */
 :root {
-  --background: #020617; /* slate-950 */
-  --foreground: #f8fafc; /* slate-50 */
+  --background: #ffffff;
+  --foreground: #171717;
+  --border: #e5e5e5;
+  --card: #fafafa;
 }
 
 @layer base {
   body {
-    @apply bg-[var(--background)] text-[var(--foreground)] transition-colors duration-500;
+    @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
     overflow-x: hidden;
   }
 }
 
-/* Glassmorphism Card Style - Optimized for Permanent Dark Mode */
-.glass-card {
-  @apply bg-slate-900/60 backdrop-blur-md border border-white/5 shadow-2xl shadow-black/50;
+.clean-card {
+  @apply bg-[var(--card)] border border-[var(--border)] rounded-xl transition-all duration-200;
 }
 
-/* Background Blobs Animation */
-.blob {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(100px);
-  z-index: -1;
-  opacity: 0.4; /* 다크모드에서 너무 밝지 않게 살짝 조절 */
-  pointer-events: none;
-}
-
-.blob-1 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(
-    circle,
-    rgba(99, 102, 241, 0.3) 0%,
-    rgba(168, 85, 247, 0.3) 100%
-  );
-  top: -100px;
-  right: -100px;
-  animation: float 20s infinite alternate;
-}
-
-.blob-2 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(
-    circle,
-    rgba(45, 212, 191, 0.2) 0%,
-    rgba(59, 130, 246, 0.2) 100%
-  );
-  bottom: -150px;
-  left: -150px;
-  animation: float 25s infinite alternate-reverse;
-}
-
-@keyframes float {
-  from {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  to {
-    transform: translate(100px, 50px) rotate(30deg);
-  }
-}
-
-/* Custom Scrollbar - Dark Style */
+/* Custom Scrollbar - Light Style */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -76,8 +31,8 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-800 rounded-full;
+  @apply bg-neutral-200 rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-700;
+  @apply bg-neutral-300;
 }
