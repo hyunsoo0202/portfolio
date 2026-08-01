@@ -1,10 +1,15 @@
+import Image from "next/image";
 import { portfolioData } from "@/data/portfolio";
+import type { MediaItem, ProblemSolving } from "@/types/portfolio";
 import {
   Mail,
   GraduationCap,
   Briefcase,
   Code2,
   ChevronRight,
+  FolderGit2,
+  Sparkles,
+  ExternalLink,
 } from "lucide-react";
 
 const GitHubIcon = ({
@@ -31,8 +36,70 @@ const GitHubIcon = ({
   </svg>
 );
 
+// Problem-Solution-Result-Why 본문. 회사 경력과 사이드 프로젝트가 같은 틀을 쓰되,
+// 제목의 heading 레벨은 문맥마다 달라야 하므로 호출부에 남겨둔다.
+const ProblemSolvingBody = ({ task }: { task: ProblemSolving }) => (
+  <div className="space-y-8">
+    <div className="space-y-2">
+      <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Problem</span>
+      <p className="text-lg text-neutral-700 leading-relaxed">{task.problem}</p>
+    </div>
+    <div className="space-y-2">
+      <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Solution</span>
+      <p className="text-lg text-neutral-700 leading-relaxed">{task.solution}</p>
+    </div>
+    <div className="space-y-2">
+      <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Result</span>
+      <p className="text-lg text-neutral-700 leading-relaxed font-medium">{task.result}</p>
+    </div>
+    {task.logic && (
+      <div className="space-y-2 p-6 bg-neutral-50 rounded-xl border border-neutral-100">
+        <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Why?</span>
+        <p className="text-base text-neutral-500 italic leading-relaxed">{task.logic}</p>
+      </div>
+    )}
+  </div>
+);
+
+// 화면 증거용 미디어.
+// video는 GIF 대체 용도라 muted + playsInline 이 있어야 모바일에서 자동재생되고,
+// preload="none" + poster 로 스크롤이 닿기 전까지는 실제 파일을 받지 않는다.
+const ProjectMedia = ({ item }: { item: MediaItem }) => (
+  <figure className="space-y-3">
+    <div className="overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50">
+      {item.type === "video" ? (
+        <video
+          src={item.src}
+          poster={item.poster}
+          width={item.width}
+          height={item.height}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="none"
+          className="w-full h-auto"
+        />
+      ) : (
+        <Image
+          src={item.src}
+          alt={item.caption ?? ""}
+          width={item.width}
+          height={item.height}
+          loading="lazy"
+          className="w-full h-auto"
+        />
+      )}
+    </div>
+    {item.caption && (
+      <figcaption className="text-sm text-neutral-400">{item.caption}</figcaption>
+    )}
+  </figure>
+);
+
 export default function Home() {
-  const { about, skills, experiences, education, contact } = portfolioData;
+  const { about, skills, projects, workflow, experiences, education, contact } =
+    portfolioData;
 
   return (
     <main className="mx-auto max-w-6xl px-8 py-20 sm:py-32 space-y-24">
@@ -153,25 +220,8 @@ export default function Home() {
                             {task.title}
                           </h5>
                           
-                          <div className="space-y-8 pl-9">
-                            <div className="space-y-2">
-                              <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Problem</span>
-                              <p className="text-lg text-neutral-700 leading-relaxed">{task.problem}</p>
-                            </div>
-                            <div className="space-y-2">
-                              <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Solution</span>
-                              <p className="text-lg text-neutral-700 leading-relaxed">{task.solution}</p>
-                            </div>
-                            <div className="space-y-2">
-                              <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Result</span>
-                              <p className="text-lg text-neutral-700 leading-relaxed font-medium">{task.result}</p>
-                            </div>
-                            {task.logic && (
-                              <div className="space-y-2 p-6 bg-neutral-50 rounded-xl border border-neutral-100">
-                                <span className="text-xs font-black text-neutral-400 uppercase tracking-[0.2em]">Why?</span>
-                                <p className="text-base text-neutral-500 italic leading-relaxed">{task.logic}</p>
-                              </div>
-                            )}
+                          <div className="pl-9">
+                            <ProblemSolvingBody task={task} />
                           </div>
                         </div>
                       ))}
@@ -181,6 +231,127 @@ export default function Home() {
               </div>
             </div>
           ))}
+
+          {/* Side Projects */}
+          {projects.length > 0 && (
+            <section className="space-y-16 pt-16 border-t border-neutral-100">
+              <div className="flex items-center gap-3 text-neutral-400 uppercase tracking-[0.2em] text-sm font-bold">
+                <FolderGit2 size={18} /> Side Projects
+              </div>
+
+              {projects.map((project, idx) => (
+                <div key={idx} className="space-y-8">
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-baseline gap-3">
+                      <h3 className="text-2xl font-bold text-neutral-800 flex items-center gap-4">
+                        <span className="w-2 h-2 rounded-full bg-neutral-300" />
+                        {project.title}
+                      </h3>
+                      <span className="text-sm font-mono text-neutral-400 font-bold tracking-tighter">
+                        {project.period}
+                        {project.status && ` · ${project.status}`}
+                      </span>
+                    </div>
+                    <div className="pl-6 space-y-4">
+                      {project.role && (
+                        <p className="text-base text-neutral-400">{project.role}</p>
+                      )}
+                      <p className="text-lg text-neutral-500 leading-relaxed">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-3 py-1.5 rounded-lg border border-neutral-200 bg-neutral-50 text-xs font-semibold text-neutral-600"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      {(project.github || project.link) && (
+                        <div className="flex flex-wrap gap-5 pt-1">
+                          {project.github && (
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors flex items-center gap-2"
+                            >
+                              <GitHubIcon size={16} className="text-neutral-400" />
+                              Source
+                            </a>
+                          )}
+                          {project.link && (
+                            <a
+                              href={project.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors flex items-center gap-2"
+                            >
+                              <ExternalLink size={16} className="text-neutral-400" />
+                              Live
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {project.media && project.media.length > 0 && (
+                    <div className="pl-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {project.media.map((item, mediaIdx) => (
+                        <ProjectMedia key={mediaIdx} item={item} />
+                      ))}
+                    </div>
+                  )}
+
+                  {project.challenges.length > 0 && (
+                    <div className="space-y-16 pl-6 border-l-2 border-neutral-100">
+                      {project.challenges.map((task, taskIdx) => (
+                        <div key={taskIdx} className="space-y-8">
+                          <h4 className="text-xl font-bold text-neutral-800 flex items-start gap-3">
+                            <ChevronRight size={24} className="text-neutral-300 mt-1 shrink-0" />
+                            {task.title}
+                          </h4>
+                          <div className="pl-9">
+                            <ProblemSolvingBody task={task} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* AI Workflow */}
+          {workflow.items.length > 0 && (
+            <section className="space-y-12 pt-16 border-t border-neutral-100">
+              <div className="flex items-center gap-3 text-neutral-400 uppercase tracking-[0.2em] text-sm font-bold">
+                <Sparkles size={18} /> AI Workflow
+              </div>
+
+              <p className="text-lg text-neutral-600 leading-relaxed">
+                {workflow.summary}
+              </p>
+
+              <div className="space-y-10 pl-6 border-l-2 border-neutral-100">
+                {workflow.items.map((item, idx) => (
+                  <div key={idx} className="space-y-3">
+                    <h3 className="text-lg font-bold text-neutral-800 flex items-start gap-3">
+                      <ChevronRight size={22} className="text-neutral-300 mt-0.5 shrink-0" />
+                      {item.title}
+                    </h3>
+                    <p className="text-base text-neutral-500 leading-relaxed pl-8">
+                      {item.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
 

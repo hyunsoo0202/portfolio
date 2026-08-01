@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "김현수 | 프론트엔드 개발자 포트폴리오",
   description:
-    "화면 너머의 데이터 흐름까지 설계하는 4년 차 개발자 김현수입니다. Next.js, React, AWS 기반의 최적화된 웹 개발 경험을 공유합니다.",
+    "화면 너머의 데이터 흐름까지 설계하는 5년 차 개발자 김현수입니다. Next.js, React, AWS 기반의 최적화된 웹 개발 경험을 공유합니다.",
   keywords: ["프론트엔드", "포트폴리오", "개발자", "김현수", "React", "Next.js", "Frontend Developer"],
   openGraph: {
     title: "김현수 | 프론트엔드 개발자 포트폴리오",

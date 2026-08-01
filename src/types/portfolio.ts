@@ -23,15 +23,34 @@ export interface Experience {
   projects: ExperienceProject[];
 }
 
+// 화면 증거용 미디어. width/height는 선택이 아니라 필수 —
+// 로드 전에 자리를 잡아두지 않으면 뒤늦게 밀려나며 CLS가 발생한다.
+export interface MediaItem {
+  type: "image" | "video";
+  src: string;        // public/ 기준 절대 경로 (예: "/media/pilsa-upload.mp4")
+  poster?: string;    // video 전용. 재생 전 보여줄 정지 이미지
+  caption?: string;
+  width: number;
+  height: number;
+}
+
 export interface Project {
   title: string;
   period: string;
   description: string;
   tags: string[];
-  link?: string;
+  status?: string;    // "진행 중", "스토어 배포 준비 중" 등
+  role?: string;
+  link?: string;      // 배포된 서비스
   github?: string;
-  images?: string[];
+  media?: MediaItem[];
   challenges: ProblemSolving[]; // 일반 프로젝트도 동일한 구조 적용
+}
+
+// 회사 경력도 사이드 프로젝트도 아닌, '일하는 방식'을 담는 영역
+export interface WorkflowItem {
+  title: string;
+  description: string;
 }
 
 export interface SkillCategory {
@@ -49,6 +68,10 @@ export interface PortfolioData {
   skills: SkillCategory[];
   projects: Project[];
   experiences: Experience[];
+  workflow: {
+    summary: string;
+    items: WorkflowItem[];
+  };
   education: {
     school: string;
     major: string;
