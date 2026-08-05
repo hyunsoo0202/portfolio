@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 /docs
+
+# 시안 비교용 페이지. 로컬에서만 본다
+/src/app/preview

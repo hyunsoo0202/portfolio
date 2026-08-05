@@ -1,15 +1,27 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Sans_KR, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// 이전에는 Geist를 latin 서브셋만 불러 한글 글리프가 아예 없었고,
+// 결과적으로 본문 대부분이 OS 기본 한글 폰트로 떨어져 보는 사람마다 다르게 보였다.
+//
+// subsets를 지정하지 않는 건 실수가 아니다. Google Fonts는 한글을 이름 붙은
+// 서브셋으로 주지 않고 unicode-range 조각으로 쪼개 배포해서, next/font의 타입에
+// 'korean' 같은 값이 아예 없다. subsets를 비우면 전체 조각을 받아 self-host한다.
+// 대신 preload 대상을 정할 수 없으므로 preload: false가 강제된다.
+const plexKr = IBM_Plex_Sans_KR({
+  variable: "--font-plex-kr",
+  weight: ["400", "500", "700"],
+  preload: false,
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// 수치와 라벨 담당. 장부의 자릿수 맞는 숫자를 위해 mono.
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -34,10 +46,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className="scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-neutral-900`}
-      >
-        <div className="relative min-h-screen">{children}</div>
+      <body className={`${plexKr.variable} ${plexMono.variable} font-sans`}>
+        {children}
       </body>
     </html>
   );

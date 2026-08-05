@@ -1,38 +1,197 @@
 @import "tailwindcss";
 
+/* 레이어(범위 확장) 어휘.
+   액센트 색이 없다. 층이 깊어질수록 어두워지는 명도만 쓴다.
+   그래서 화면에서 어두운 부분이 곧 '깊이 들어간 지점'이 된다. */
 @theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-plex-kr);
+  --font-mono: var(--font-plex-mono);
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --border: #e5e5e5;
-  --card: #fafafa;
+  /* 표면은 두 톤뿐이다. 바탕과, 그 위에 올라온 것.
+     섹션 블록과 카드는 같은 톤을 쓰고, 둘의 차이는 그림자로만 낸다 —
+     카드까지 흰색으로 한 단계 더 올리면 프로젝트 영역만 튀어 보인다. */
+  --color-paper: #e9e7e0; /* 페이지 바탕 */
+  --color-surface: #f7f6f2; /* 섹션 블록 · 카드 */
+
+  --color-band: #e2e0d7; /* 태그 배경 */
+  --color-ink: #1b1e19;
+  --color-accent: #2f6152; /* 히어로의 이름 한 곳에만 쓴다 */
+  --color-muted: #4a4e46; /* 본문 보조. 블록 대비 약 8.5:1 */
+  --color-rule: #d5d3ca;
+
+  /* 층 명도. 기술 스택 섹션의 막대에 쓴다 */
+  --color-depth-1: #b9bab3;
+  --color-depth-2: #8c8f87;
+  --color-depth-3: #2b2e28;
 }
 
 @layer base {
   body {
-    @apply bg-[var(--background)] text-[var(--foreground)] antialiased;
-    overflow-x: hidden;
+    @apply bg-paper text-ink antialiased;
   }
 }
 
-.clean-card {
-  @apply bg-[var(--card)] border border-[var(--border)] rounded-xl transition-all duration-200;
+/* 시트 배경. 이미지 파일이 아니라 radial-gradient 세 겹이다.
+   파일이 없으니 요청도 없고 용량도 0이며, 어떤 화면 크기에서도 다시 그려진다.
+   블롭은 모서리 바깥에 중심을 두어 가장자리가 잘린 것처럼 보이게 한다 —
+   화면 안에 원이 통째로 들어오면 '도형'으로 읽히고 배경이 아니게 된다.
+
+   그리는 규칙은 .mesh 하나뿐이고, 색만 변수로 갈아 끼운다.
+   시트마다 gradient를 따로 쓰면 위치·크기가 조금씩 어긋나면서 장마다
+   다른 화면처럼 보인다. 색만 바뀌어야 '같은 종이의 다른 장'으로 읽힌다. */
+.mesh {
+  background-color: var(--color-surface);
+  background-image:
+    radial-gradient(58% 52% at 10% 4%, var(--mesh-a) 0%, transparent 62%),
+    radial-gradient(52% 48% at 92% 2%, var(--mesh-b) 0%, transparent 64%),
+    radial-gradient(72% 58% at 42% 104%, var(--mesh-c) 0%, transparent 66%);
 }
 
-/* Custom Scrollbar - Light Style */
+/* 장마다 색조만 조금씩 돌린다. 채도는 전부 낮게 유지한다 —
+   본문이 이 위에 바로 올라가므로 색이 진해지면 글자 대비가 먼저 깨진다. */
+.mesh-top {
+  --mesh-a: #cfe2d6; /* 세이지 */
+  --mesh-b: #dde8d4;
+  --mesh-c: #f2ead1;
+}
+.mesh-career {
+  --mesh-a: #d5e0e7; /* 청회색 */
+  --mesh-b: #dfe7da;
+  --mesh-c: #f1ecdd;
+}
+.mesh-projects {
+  --mesh-a: #e1dced; /* 옅은 보라 */
+  --mesh-b: #d9e4e1;
+  --mesh-c: #f3ecdb;
+}
+.mesh-workflow {
+  --mesh-a: #e7ded3; /* 모래 */
+  --mesh-b: #d8e3de;
+  --mesh-c: #eeead7;
+}
+.mesh-extra {
+  --mesh-a: #dce5d3; /* 잎 */
+  --mesh-b: #e5dfd3;
+  --mesh-c: #edf0e3;
+}
+
+/* 카드 전용. 섹션 블록과 카드는 같은 톤이라 색으로는 구분되지 않고,
+   그림자가 그 한 단계를 담당한다. 블록에는 쓰지 않는다 —
+   그림자를 두 층에 다 쓰면 어느 쪽이 위인지 흐려진다. */
+.lift {
+  box-shadow:
+    0 1px 2px rgba(27, 30, 25, 0.04),
+    0 6px 16px -8px rgba(27, 30, 25, 0.1);
+}
+
+/* ── 시트 스택 ─────────────────────────────────────────
+   각 섹션이 종이 한 장이다. 다음 장이 아래에서 올라와 앞 장을 덮고,
+   덮인 장은 그 자리에 남아 더미가 된다.
+
+   덮는 동작은 position: sticky 하나로 만든다. 스크롤 이벤트를 가로채는
+   방식(스크롤 하이재킹)과 달리 브라우저의 기본 스크롤이 그대로라
+   키보드·트랙패드 관성·스크린리더 이동이 깨지지 않는다.
+
+   좁은 화면에서는 전부 끈다. 세로 공간이 좁아 한 섹션이 한 화면에 들어가지
+   않기 때문이고, 그 상태로 sticky를 걸면 아래쪽 내용이 잘려 나간다. */
+@media (min-width: 768px) {
+  html {
+    /* mandatory가 아니라 proximity다. 화면보다 긴 시트에서 스크롤이
+       갇히지 않으면서도, 섹션 근처에서는 자석처럼 자리를 잡는다. */
+    scroll-snap-type: y proximity;
+  }
+
+  .sheet {
+    position: sticky;
+    top: 0;
+    scroll-snap-align: start;
+  }
+
+  /* 뷰포트보다 큰 시트는 sticky를 풀어 일반 흐름으로 되돌린다.
+     sticky top:0인 요소가 화면보다 크면 위쪽이 0에 붙잡혀 아래쪽 내용이
+     영영 화면에 들어오지 못한다. 판정은 SheetNav가 높이를 재서 한다. */
+  .sheet[data-tall="true"] {
+    position: relative;
+  }
+
+  /* 앞 장의 위 가장자리. 덮는 장이 실제로 '위에 놓인 종이'로 읽히려면
+     경계에 그림자가 있어야 한다. 카드의 .lift와 방향이 반대다. */
+  .sheet-edge {
+    box-shadow: 0 -18px 40px -22px rgba(27, 30, 25, 0.4);
+  }
+}
+
+/* 덮이는 장이 뒤로 물러나는 느낌.
+   진행도를 스크롤 핸들러가 아니라 CSS 스크롤 타임라인이 계산한다 —
+   메인 스레드를 쓰지 않아 스크롤이 무거워지지 않는다.
+   view()는 sticky 오프셋을 무시하고 요소의 원래 레이아웃 위치를 기준으로
+   진행도를 매기므로, 화면 위에 고정돼 있어도 '얼마나 덮였는지'와 일치한다.
+   지원하지 않는 브라우저에서는 이 블록만 통째로 빠지고 스택은 그대로 동작한다. */
+@supports (animation-timeline: view()) {
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .sheet:not([data-tall="true"]) {
+      animation: sheet-recede linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+      transform-origin: 50% 0;
+    }
+
+    .sheet-shade {
+      animation: sheet-shade linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+@keyframes sheet-recede {
+  to {
+    transform: scale(0.94);
+  }
+}
+
+@keyframes sheet-shade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.45;
+  }
+}
+
+.sheet-shade {
+  opacity: 0;
+  background: rgba(27, 30, 25, 0.6);
+}
+
+/* 시트 자체가 표면 블록이므로 그 안의 섹션은 껍데기를 벗는다.
+   안 벗기면 같은 톤의 블록이 두 겹 겹쳐 경계가 사라진다. */
+.sheet-body section {
+  background: transparent;
+  padding: 0;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-neutral-200 rounded-full;
+  @apply bg-rule rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-neutral-300;
+  @apply bg-muted;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
