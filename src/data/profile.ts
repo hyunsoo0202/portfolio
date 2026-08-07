@@ -28,12 +28,6 @@ export const portfolio: PortfolioData = {
 
   careers: [
     {
-      organization: "컴퓨터과학 학위 과정 병행 및 사이드 프로젝트 진행",
-      period: "2025.11 - 진행 중",
-      summary:
-        "방송통신대학교 컴퓨터과학과 3학년 편입(2026.03~), SQLD 취득(2026.03). 사이드 프로젝트 2건 진행 중.",
-    },
-    {
       organization: "(주) PPB STUDIOS",
       team: "플랫폼팀",
       period: "2024.06 - 2025.10",
