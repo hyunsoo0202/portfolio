@@ -4,26 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { SECTIONS } from "@/data/sections";
 import { scrollToAnchor } from "@/lib/scroll";
 
-// 우측 목차 + 시트 스택의 유일한 클라이언트 코드.
-//
-// 세 가지를 한다.
-//  1) 지금 보고 있는 시트를 표시한다.
-//  2) 화면보다 긴 시트에 data-tall을 달아 sticky를 해제한다.
-//  3) 목차 클릭을 가로채 시트의 '레이아웃 위치'로 스크롤한다.
-//
-// (2)가 필요한 이유: sticky top:0인 요소가 뷰포트보다 크면 위쪽이 0에 붙잡혀
-// 아래쪽 내용이 영영 화면에 들어오지 못한다. 창을 줄이거나 글자 크기를 키우면
-// 실제로 발생하므로, 높이를 재서 그런 시트만 일반 흐름으로 되돌린다.
+// 우측 목차. 두 가지를 한다.
+//  1) 지금 보고 있는 섹션을 표시한다.
+//  2) 목차 클릭을 가로채 그 섹션으로 스크롤한다.
 
-/** sticky 때문에 rect.top이 0으로 고정되는 시트까지 감안한 판정선 */
+/** 판정선: 뷰포트 위에서부터 이 비율 지점을 지나야 그 장을 "보고 있다"고 친다 */
 const ACTIVE_LINE_RATIO = 0.4;
 
 function getActiveIndex(rects: DOMRect[], viewportHeight: number): number {
   const line = viewportHeight * ACTIVE_LINE_RATIO;
 
-  // 뒤에서부터 훑고 첫 매치에서 멈춘다. 시트는 스택이라 판정선을 넘어온 장이
-  // 여러 개 겹쳐 있고, 그중 가장 나중 것이 맨 위에 놓인 = 지금 보고 있는 장이다.
-  // 앞에서부터 훑으면 밑에 깔린 장을 먼저 만나 계속 첫 장이 활성으로 잡힌다.
   for (let i = rects.length - 1; i >= 0; i -= 1) {
     if (rects[i].top <= line) return i;
   }
@@ -35,24 +25,12 @@ function getActiveIndex(rects: DOMRect[], viewportHeight: number): number {
 
 export function SheetNav() {
   const [active, setActive] = useState(0);
-  // 이동 목표는 시트가 아니라 시트 앞의 표식에서 읽는다 — 시트는 sticky라
-  // 화면에 붙는 순간 모든 좌표(rect, offsetTop)가 현재 화면 위치로 바뀐다.
-  const anchorsRef = useRef<HTMLElement[]>([]);
+  const sheetsRef = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
     const sheets = Array.from(document.querySelectorAll<HTMLElement>("[data-sheet]"));
     if (sheets.length === 0) return;
-    anchorsRef.current = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-sheet-anchor]"),
-    );
-
-    // 화면보다 긴 시트 표시. 창 크기가 바뀌면 다시 잰다.
-    const measure = () => {
-      for (const sheet of sheets) {
-        // sticky가 걸린 상태에서도 offsetHeight는 레이아웃 높이 그대로다.
-        sheet.dataset.tall = String(sheet.offsetHeight > window.innerHeight + 1);
-      }
-    };
+    sheetsRef.current = sheets;
 
     // 스크롤 핸들러는 rAF로 묶는다. 스크롤 이벤트는 프레임당 여러 번 올 수 있는데
     // 우리가 하는 일(getBoundingClientRect)은 레이아웃을 강제로 계산시키므로
@@ -67,38 +45,30 @@ export function SheetNav() {
       });
     };
 
-    const onResize = () => {
-      measure();
-      onScroll();
-    };
-
-    measure();
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onScroll);
     return () => {
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onScroll);
     };
   }, []);
 
   // 목차 클릭. href는 그대로 두고(자바스크립트가 죽어도, 새 탭으로 열어도 동작한다)
   // 스크립트가 살아 있을 때만 기본 동작을 대신한다.
   const jumpTo = (index: number) => (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const anchor = anchorsRef.current[index];
-    if (!anchor || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+    const sheet = sheetsRef.current[index];
+    if (!sheet || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
 
     event.preventDefault();
-    scrollToAnchor(anchor);
+    scrollToAnchor(sheet);
     // 도착 표시를 기다리지 않고 먼저 옮긴다. 스무스 스크롤이 끝날 때까지
     // 목차가 출발한 자리에 남아 있으면 클릭이 안 먹은 것처럼 보인다.
     setActive(index);
   };
 
   return (
-    // 시트가 z축으로 쌓이는 구조라 목차는 그보다 위에 떠 있어야 한다.
-    // 좁은 화면에서는 스택 자체를 끄므로 목차도 숨긴다.
     <nav
       aria-label="섹션 목차"
       className="fixed right-8 top-1/2 z-50 hidden -translate-y-1/2 md:block"

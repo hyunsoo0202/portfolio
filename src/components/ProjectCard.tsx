@@ -3,9 +3,12 @@ import type { Project } from "@/types/portfolio";
 // 카드는 제목 · 설명 · 사용 기술 · 소속 네 가지만 싣는다.
 // 테두리를 두르지 않는다 — 흰 카드가 회색 바탕 위에 떠 있는 것만으로 경계가 생긴다.
 // 소속은 mt-auto로 바닥에 고정해, 설명 길이가 달라도 카드마다 같은 줄에 정렬된다.
-export function ProjectCard({ project }: { project: Project }) {
-  return (
-    <article className="lift flex h-full flex-col rounded-lg bg-surface p-5">
+//
+// detail이나 summary가 있는 프로젝트만 클릭된다(모달을 연다). 나머지는 article로 남아
+// 클릭할 곳이 없다는 게 시각적으로도(커서 변화·hover 없음) 전달된다.
+export function ProjectCard({ project, onOpen }: { project: Project; onOpen: (project: Project) => void }) {
+  const content = (
+    <>
       <h3 className="text-base font-bold leading-snug tracking-tight">{project.title}</h3>
 
       <p className="mt-3 text-sm leading-relaxed text-muted">{project.description}</p>
@@ -22,6 +25,22 @@ export function ProjectCard({ project }: { project: Project }) {
       </ul>
 
       <div className="mt-auto pt-5 font-mono text-[11px] text-ink">{project.affiliation}</div>
-    </article>
+    </>
   );
+
+  const className = "lift flex h-full flex-col rounded-lg bg-surface p-5 text-left";
+
+  if (project.detail || project.summary) {
+    return (
+      <button
+        type="button"
+        onClick={() => onOpen(project)}
+        className={`${className} lift-interactive`}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return <article className={className}>{content}</article>;
 }

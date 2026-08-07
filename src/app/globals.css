@@ -84,84 +84,18 @@
     0 6px 16px -8px rgba(27, 30, 25, 0.1);
 }
 
-/* ── 시트 스택 ─────────────────────────────────────────
-   각 섹션이 종이 한 장이다. 다음 장이 아래에서 올라와 앞 장을 덮고,
-   덮인 장은 그 자리에 남아 더미가 된다.
-
-   덮는 동작은 position: sticky 하나로 만든다. 스크롤 이벤트를 가로채는
-   방식(스크롤 하이재킹)과 달리 브라우저의 기본 스크롤이 그대로라
-   키보드·트랙패드 관성·스크린리더 이동이 깨지지 않는다.
-
-   좁은 화면에서는 전부 끈다. 세로 공간이 좁아 한 섹션이 한 화면에 들어가지
-   않기 때문이고, 그 상태로 sticky를 걸면 아래쪽 내용이 잘려 나간다. */
-@media (min-width: 768px) {
-  html {
-    /* mandatory가 아니라 proximity다. 화면보다 긴 시트에서 스크롤이
-       갇히지 않으면서도, 섹션 근처에서는 자석처럼 자리를 잡는다. */
-    scroll-snap-type: y proximity;
-  }
-
-  .sheet {
-    position: sticky;
-    top: 0;
-    scroll-snap-align: start;
-  }
-
-  /* 뷰포트보다 큰 시트는 sticky를 풀어 일반 흐름으로 되돌린다.
-     sticky top:0인 요소가 화면보다 크면 위쪽이 0에 붙잡혀 아래쪽 내용이
-     영영 화면에 들어오지 못한다. 판정은 SheetNav가 높이를 재서 한다. */
-  .sheet[data-tall="true"] {
-    position: relative;
-  }
-
-  /* 앞 장의 위 가장자리. 덮는 장이 실제로 '위에 놓인 종이'로 읽히려면
-     경계에 그림자가 있어야 한다. 카드의 .lift와 방향이 반대다. */
-  .sheet-edge {
-    box-shadow: 0 -18px 40px -22px rgba(27, 30, 25, 0.4);
-  }
+/* 클릭 가능한 카드에만 붙는다. 그림자를 살짝 키우고 1px 띄워
+   "눌린다"가 아니라 "떠 있다"는 느낌으로 클릭 가능함을 알린다. */
+.lift-interactive {
+  transition:
+    box-shadow 150ms ease,
+    transform 150ms ease;
 }
-
-/* 덮이는 장이 뒤로 물러나는 느낌.
-   진행도를 스크롤 핸들러가 아니라 CSS 스크롤 타임라인이 계산한다 —
-   메인 스레드를 쓰지 않아 스크롤이 무거워지지 않는다.
-   view()는 sticky 오프셋을 무시하고 요소의 원래 레이아웃 위치를 기준으로
-   진행도를 매기므로, 화면 위에 고정돼 있어도 '얼마나 덮였는지'와 일치한다.
-   지원하지 않는 브라우저에서는 이 블록만 통째로 빠지고 스택은 그대로 동작한다. */
-@supports (animation-timeline: view()) {
-  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-    .sheet:not([data-tall="true"]) {
-      animation: sheet-recede linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 100%;
-      transform-origin: 50% 0;
-    }
-
-    .sheet-shade {
-      animation: sheet-shade linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 100%;
-    }
-  }
-}
-
-@keyframes sheet-recede {
-  to {
-    transform: scale(0.94);
-  }
-}
-
-@keyframes sheet-shade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.45;
-  }
-}
-
-.sheet-shade {
-  opacity: 0;
-  background: rgba(27, 30, 25, 0.6);
+.lift-interactive:hover {
+  box-shadow:
+    0 2px 4px rgba(27, 30, 25, 0.06),
+    0 10px 24px -8px rgba(27, 30, 25, 0.14);
+  transform: translateY(-2px);
 }
 
 /* 시트 자체가 표면 블록이므로 그 안의 섹션은 껍데기를 벗는다.

@@ -37,6 +37,52 @@ export interface Project {
   description: string;
   tags: string[];
   links?: ProjectLinks;
+  /** 없으면 카드에서 상세 페이지로 링크하지 않는다 (docs/프로젝트_콘텐츠_구성안.md §심층 4개만 해당) */
+  detail?: ProjectDetail;
+  /** detail 없는 프로젝트용 경량 요약. 모달만 열리고 /projects/[slug] 라우트는 없다 */
+  summary?: ProjectSummary;
+}
+
+/** 경력기술서 원문 그대로. 구조도·의사결정만 없을 뿐 소제목+세부 불릿은 원문 전체를 담는다 */
+export interface ProjectSummary {
+  overview: string;
+  groups: ProjectSummaryGroup[];
+}
+
+export interface ProjectSummaryGroup {
+  heading: string;
+  items: string[];
+}
+
+/**
+ * 다이어그램은 프로젝트마다 박스·화살표 배치가 완전히 달라 데이터로
+ * 일반화하지 않는다. 여기엔 캡션만 두고, 실제 SVG는 id로 컴포넌트
+ * registry(components/diagrams/registry.tsx)에서 찾아 그린다.
+ */
+export interface DiagramRef {
+  id: string;
+  title: string;
+  caption?: string;
+}
+
+/** "왜 이 방법이었나" 한 항목. answer에 트레이드오프(무엇을 감수했는지)까지 포함해서 쓴다 */
+export interface DecisionQA {
+  question: string;
+  answer: string;
+}
+
+export interface ProjectDetail {
+  overview: string; // 1. 개요 — 무슨 서비스, 누가 씀 (2~3줄)
+  role: {
+    team: string; // 팀 구성
+    responsibilities: string[]; // 내가 맡은 것
+    outOfScope?: string[]; // 안 맡은 것
+  };
+  diagrams: DiagramRef[]; // 3. 구조도
+  problem: string; // 4. 문제와 접근 — 이력서 내용 확장
+  decisions: DecisionQA[]; // 5. 왜 이 방법이었나 — 존재 이유, 여기 힘 준다
+  outcome: string; // 6. 결과
+  retrospective: string; // 7. 아쉬운 점 / 지금이라면
 }
 
 export interface SkillCategory {

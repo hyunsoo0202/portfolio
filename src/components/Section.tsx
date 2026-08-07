@@ -13,7 +13,9 @@ export function Section({
   bare = false,
   className = "",
 }: {
-  label: string;
+  // 문자열이 기본이지만, 라벨 옆에 작은 부가 정보(예: 연차)를 붙이는 섹션이
+  // 있어서 ReactNode로 받는다.
+  label: React.ReactNode;
   children: React.ReactNode;
   bare?: boolean;
   className?: string;

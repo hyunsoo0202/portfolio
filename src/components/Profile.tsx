@@ -26,8 +26,9 @@ export function Profile({
         <h2 className="text-lg font-bold leading-snug tracking-tight sm:text-xl">
           {intro.headline}
         </h2>
-        <p className="mt-4 font-mono text-sm text-muted">{profile.career}</p>
-        <p className="mt-3 leading-loose">{intro.body}</p>
+        {/* 연차는 경력 섹션 제목 옆으로 옮겼다 — 숫자만 떠 있는 줄이 되기보다
+            "경력 (5년차)"처럼 라벨에 붙는 편이 무엇에 대한 숫자인지 분명하다. */}
+        <p className="mt-4 leading-loose">{intro.body}</p>
       </div>
 
       {/* 연락처 한 행. 칸을 가르는 선 없이 열 간격만으로 나눈다. */}
