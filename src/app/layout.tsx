@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_KR, IBM_Plex_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
+
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
 // 이전에는 Geist를 latin 서브셋만 불러 한글 글리프가 아예 없었고,
 // 결과적으로 본문 대부분이 OS 기본 한글 폰트로 떨어져 보는 사람마다 다르게 보였다.
@@ -49,6 +52,7 @@ export default function RootLayout({
       <body className={`${plexKr.variable} ${plexMono.variable} font-sans`}>
         {children}
       </body>
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }

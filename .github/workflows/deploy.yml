@@ -30,6 +30,8 @@ jobs:
       # 4. 프로젝트를 빌드합니다. (out 폴더 생성)
       - name: Build
         run: yarn build
+        env:
+          NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
 
       # 5. AWS 인증 정보를 설정합니다. (GitHub Secrets에서 값을 읽어옵니다.)
       - name: Configure AWS Credentials

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { Section } from "./Section";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectDetailModal } from "./ProjectDetailModal";
@@ -15,11 +16,18 @@ import type { Project } from "@/types/portfolio";
 export function ProjectSection({ projects }: { projects: Project[] }) {
   const [selected, setSelected] = useState<Project | null>(null);
 
+  const handleOpen = (project: Project) => {
+    setSelected(project);
+    // 상세가 모달이라 URL이 안 바뀌어 페이지뷰로는 안 잡힌다.
+    // 어떤 프로젝트가 열렸는지 slug로 커스텀 이벤트를 남긴다.
+    sendGAEvent("event", "view_project_detail", { project_slug: project.slug });
+  };
+
   return (
     <Section label="프로젝트" bare>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} onOpen={setSelected} />
+          <ProjectCard key={project.slug} project={project} onOpen={handleOpen} />
         ))}
       </div>
 
